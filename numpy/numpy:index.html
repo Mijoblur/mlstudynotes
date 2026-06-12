@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NumPy Fundamentals — Study Notes &amp; Self-Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6FAFB;
+  --ink:#0C2630;
+  --ink-soft:#3D5A66;
+  --reef:#0E7C7B;        /* deep teal — section accent */
+  --reef-tint:#E2F1F0;
+  --coral:#E8593F;       /* warning / trap accent */
+  --coral-tint:#FCEAE5;
+  --sand:#F2E8D5;
+  --amber:#C77B0A;
+  --cell:#D7E8EA;
+  --cell-on:#0E7C7B;
+  --code-bg:#0C2630;
+  --code-ink:#D9EEF0;
+  --radius:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'IBM Plex Sans',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.65;
+  font-size:16.5px;
+}
+.wrap{max-width:860px;margin:0 auto;padding:0 22px}
+
+/* ---------- hero ---------- */
+header{
+  background:linear-gradient(180deg,#0C2630 0%,#11414A 100%);
+  color:#E8F4F5;
+  padding:56px 0 48px;
+}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;letter-spacing:.14em;text-transform:uppercase;
+  color:#7FC9C5;margin-bottom:14px;
+}
+h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(30px,5vw,46px);
+  font-weight:700;line-height:1.12;letter-spacing:-.01em;
+}
+h1 .mono{font-family:'JetBrains Mono',monospace;color:#7FC9C5;font-weight:500}
+.hero-sub{margin-top:14px;max-width:560px;color:#B9D8DA;font-size:17px}
+.hero-grid{
+  margin-top:30px;display:grid;grid-template-columns:repeat(16,1fr);gap:4px;
+  max-width:560px;
+}
+.hero-grid span{
+  aspect-ratio:1;border-radius:3px;background:rgba(127,201,197,.16);
+  transition:background .5s;
+}
+.hero-grid span.lit{background:#5FBDB8}
+.hero-caption{
+  font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#7FC9C5;
+  margin-top:10px;
+}
+
+/* ---------- TOC ---------- */
+nav{
+  background:#fff;border-bottom:1px solid #DCE9EB;
+  position:sticky;top:0;z-index:10;
+}
+nav .wrap{display:flex;gap:4px;overflow-x:auto;padding-top:0;padding-bottom:0}
+nav a{
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  color:var(--ink-soft);text-decoration:none;white-space:nowrap;
+  padding:13px 12px;border-bottom:3px solid transparent;
+}
+nav a:hover,nav a:focus-visible{color:var(--reef);border-bottom-color:var(--reef)}
+nav a.quiz-link{color:var(--coral);font-weight:700}
+
+/* ---------- sections ---------- */
+main{padding:46px 0 80px}
+section{margin-bottom:58px}
+.sec-tag{
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  color:var(--reef);background:var(--reef-tint);
+  display:inline-block;padding:4px 10px;border-radius:5px;margin-bottom:10px;
+}
+h2{
+  font-family:'Space Grotesk',sans-serif;font-size:27px;font-weight:700;
+  margin-bottom:6px;letter-spacing:-.01em;
+}
+.task-ref{font-size:14px;color:var(--ink-soft);margin-bottom:18px;font-style:italic}
+h3{
+  font-family:'Space Grotesk',sans-serif;font-size:18.5px;font-weight:600;
+  margin:26px 0 8px;
+}
+p{margin-bottom:13px;max-width:70ch}
+strong{font-weight:600}
+
+/* code */
+pre{
+  background:var(--code-bg);color:var(--code-ink);
+  font-family:'JetBrains Mono',monospace;font-size:14px;line-height:1.6;
+  padding:16px 18px;border-radius:var(--radius);overflow-x:auto;
+  margin:12px 0 18px;
+}
+code{
+  font-family:'JetBrains Mono',monospace;font-size:.92em;
+  background:var(--reef-tint);color:#0A5857;
+  padding:1.5px 6px;border-radius:4px;
+}
+pre code{background:none;color:inherit;padding:0}
+.cmt{color:#6FA8AA}
+
+/* tables */
+table{
+  width:100%;border-collapse:collapse;margin:12px 0 18px;
+  font-size:15px;background:#fff;border-radius:var(--radius);overflow:hidden;
+  border:1px solid #DCE9EB;
+}
+th{
+  font-family:'Space Grotesk',sans-serif;font-weight:600;text-align:left;
+  background:var(--reef-tint);color:#0A5857;padding:10px 14px;font-size:14px;
+}
+td{padding:9px 14px;border-top:1px solid #E8F0F1}
+td code{white-space:nowrap}
+
+/* callouts */
+.trap{
+  background:var(--coral-tint);border-left:4px solid var(--coral);
+  border-radius:0 var(--radius) var(--radius) 0;
+  padding:14px 18px;margin:14px 0 18px;
+}
+.trap .t-label{
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
+  letter-spacing:.1em;color:var(--coral);text-transform:uppercase;display:block;margin-bottom:4px;
+}
+.dive{
+  background:var(--sand);border-left:4px solid var(--amber);
+  border-radius:0 var(--radius) var(--radius) 0;
+  padding:14px 18px;margin:14px 0 18px;
+}
+.dive .t-label{
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
+  letter-spacing:.1em;color:var(--amber);text-transform:uppercase;display:block;margin-bottom:4px;
+}
+
+/* skill map */
+.skillmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:18px 0 6px}
+.skillmap div{
+  background:#fff;border:1px solid #DCE9EB;border-radius:var(--radius);
+  padding:14px;font-size:14px;
+}
+.skillmap .sm-tasks{
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--reef);
+  display:block;margin-bottom:5px;
+}
+.skillmap b{font-family:'Space Grotesk',sans-serif;font-size:15px;display:block;margin-bottom:3px}
+
+/* ---------- quiz ---------- */
+#quiz{
+  background:#fff;border:1px solid #DCE9EB;border-radius:14px;
+  padding:34px clamp(18px,4vw,40px);
+}
+#quiz h2{display:flex;align-items:center;gap:10px}
+.q{
+  border-top:1px solid #E8F0F1;padding:24px 0;
+}
+.q:first-of-type{border-top:none}
+.q-num{
+  font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--reef);
+  letter-spacing:.08em;display:block;margin-bottom:6px;
+}
+.q-text{font-weight:600;margin-bottom:6px;font-size:16.5px}
+.q-text code,.opt code{font-size:.95em}
+.q pre{margin-top:8px}
+.opts{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.opt{
+  display:flex;align-items:flex-start;gap:10px;
+  background:var(--paper);border:1.5px solid #DCE9EB;border-radius:8px;
+  padding:11px 14px;cursor:pointer;font-size:15.5px;
+  transition:border-color .15s, background .15s;
+}
+.opt:hover{border-color:var(--reef)}
+.opt input{margin-top:4px;accent-color:var(--reef);cursor:pointer}
+.opt.correct{border-color:#1E9E63;background:#E9F7F0}
+.opt.wrong{border-color:var(--coral);background:var(--coral-tint)}
+.explain{
+  display:none;margin-top:12px;font-size:14.5px;
+  background:var(--reef-tint);border-radius:8px;padding:12px 16px;color:#0A4A49;
+}
+.explain.show{display:block}
+.explain b{color:#063837}
+
+.quiz-actions{margin-top:28px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+button{
+  font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:600;
+  border:none;border-radius:9px;padding:13px 26px;cursor:pointer;
+}
+#checkBtn{background:var(--reef);color:#fff}
+#checkBtn:hover{background:#0A6362}
+#resetBtn{background:#fff;color:var(--ink-soft);border:1.5px solid #C9DCDE}
+#resetBtn:hover{border-color:var(--ink-soft)}
+button:focus-visible,.opt:focus-within{outline:3px solid #7FC9C5;outline-offset:2px}
+#score{
+  font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;
+}
+#score .verdict{display:block;font-family:'IBM Plex Sans',sans-serif;font-weight:400;font-size:14.5px;color:var(--ink-soft)}
+
+footer{
+  text-align:center;padding:30px 20px 50px;color:var(--ink-soft);font-size:14px;
+}
+footer code{font-size:13px}
+
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+  html{scroll-behavior:auto}
+}
+@media (max-width:560px){
+  body{font-size:15.5px}
+  .hero-grid{grid-template-columns:repeat(8,1fr)}
+  .hero-grid span:nth-child(n+65){display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Python · Tasks 1–15 · Mijo's lab notes</div>
+    <h1>NumPy is just grids.<br><span class="mono">arange · reshape · [row, col]</span></h1>
+    <p class="hero-sub">Fifteen tasks, five skills. Everything below is the same idea wearing different hats: a flat sequence of numbers, reshaped and sliced.</p>
+    <div class="hero-grid" id="heroGrid" aria-hidden="true"></div>
+    <div class="hero-caption" id="heroCaption">np.arange(128).reshape(8, 16) — every frame of your dive footage starts like this</div>
+  </div>
+</header>
+
+<nav aria-label="Sections">
+  <div class="wrap">
+    <a href="#map">notes[0] map</a>
+    <a href="#create">notes[1] create</a>
+    <a href="#random">notes[2] random</a>
+    <a href="#attrs">notes[3] attributes</a>
+    <a href="#reshape">notes[4] reshape</a>
+    <a href="#index">notes[5] indexing</a>
+    <a href="#traps">notes[6] traps</a>
+    <a class="quiz-link" href="#quiz">▶ self-test</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<!-- ================= MAP ================= -->
+<section id="map">
+  <span class="sec-tag">notes[0]</span>
+  <h2>What you're actually learning</h2>
+  <p>The core idea behind all 15 tasks: <strong>NumPy replaces slow Python loops with one operation applied to a whole array at once.</strong> Instead of looping through 10 marks, you write one line and NumPy handles all 10 simultaneously.</p>
+  <div class="skillmap">
+    <div><span class="sm-tasks">Tasks 1–3</span><b>Creating arrays</b>array(), zeros(), ones()</div>
+    <div><span class="sm-tasks">Tasks 4–5</span><b>Random data</b>uniform(), randint()</div>
+    <div><span class="sm-tasks">Tasks 7–9</span><b>Attributes</b>ndim, shape, size, dtype, itemsize</div>
+    <div><span class="sm-tasks">Tasks 6, 10–12</span><b>Reshaping</b>arange(), reshape()</div>
+    <div><span class="sm-tasks">Tasks 13–15</span><b>Indexing</b>[row, col], masks, fancy indexing</div>
+  </div>
+</section>
+
+<!-- ================= CREATE ================= -->
+<section id="create">
+  <span class="sec-tag">notes[1]</span>
+  <h2>Creating arrays</h2>
+  <p class="task-ref">Tasks 1 (student marks) · 2 (factory zeros) · 3 (attendance ones)</p>
+
+  <h3>From a list — when you already have the data</h3>
+<pre><code>marks = np.array([78, 85, 62, 90, 55])</code></pre>
+
+  <h3>Pre-filled — when you need a placeholder structure</h3>
+<pre><code>np.zeros((5, 4))   <span class="cmt"># 5×4 of 0.0 — "empty" starting state</span>
+np.ones((7, 3))    <span class="cmt"># 7×3 of 1.0 — a base value to scale up</span></code></pre>
+
+  <div class="trap"><span class="t-label">Trap</span>
+  The shape must be a <strong>tuple</strong> — double parentheses. <code>np.zeros(5, 4)</code> ❌ errors; <code>np.zeros((5, 4))</code> ✅ works.</div>
+
+  <h3>The mindset shift: no loops</h3>
+<pre><code>factory[0] = [120, 135, 110, 142]  <span class="cmt"># replace a whole row in one line</span>
+attendance = np.ones((7, 3)) * 50  <span class="cmt"># multiply EVERY element at once</span></code></pre>
+  <p>That second line is <strong>broadcasting</strong> — one operation applied across the entire array. This is <em>the</em> reason NumPy exists.</p>
+</section>
+
+<!-- ================= RANDOM ================= -->
+<section id="random">
+  <span class="sec-tag">notes[2]</span>
+  <h2>Random data</h2>
+  <p class="task-ref">Tasks 4 (temperatures) · 5 (lottery)</p>
+
+  <table>
+    <tr><th>Function</th><th>Gives you</th><th>Used for</th></tr>
+    <tr><td><code>np.random.uniform(24, 38, 30)</code></td><td>30 <strong>decimals</strong> in 24–38</td><td>temperatures</td></tr>
+    <tr><td><code>np.random.randint(100, 1000, 20)</code></td><td>20 <strong>integers</strong> in 100–999</td><td>lottery numbers</td></tr>
+  </table>
+
+  <div class="trap"><span class="t-label">Trap</span>
+  The upper bound is <strong>exclusive</strong>. <code>randint(100, 1000)</code> never produces 1000 — you write 1000 to include 999.</div>
+
+  <h3>Built-in statistics — the array describes itself</h3>
+<pre><code>temps.min()   temps.max()   temps.mean()</code></pre>
+  <p>Tip for assignments: <code>np.random.seed(42)</code> at the top makes "random" output identical every run, so your lecturer can verify it.</p>
+</section>
+
+<!-- ================= ATTRIBUTES ================= -->
+<section id="attrs">
+  <span class="sec-tag">notes[3]</span>
+  <h2>Attributes — the array's ID card</h2>
+  <p class="task-ref">Tasks 7 (3D investigation) · 8 (memory) · 9 (shape detective)</p>
+
+<pre><code>arr = np.array([[[1,2,3], [4,5,6]],
+                [[7,8,9], [10,11,12]]])</code></pre>
+
+  <table>
+    <tr><th>Attribute</th><th>Output</th><th>Meaning</th></tr>
+    <tr><td><code>arr.ndim</code></td><td>3</td><td>number of dimensions</td></tr>
+    <tr><td><code>arr.shape</code></td><td>(2, 2, 3)</td><td>elements along each dimension</td></tr>
+    <tr><td><code>arr.size</code></td><td>12</td><td>total elements = 2 × 2 × 3</td></tr>
+    <tr><td><code>arr.dtype</code></td><td>int64</td><td>type of each element</td></tr>
+    <tr><td><code>arr.itemsize</code></td><td>8</td><td>bytes per element (64 bits ÷ 8)</td></tr>
+  </table>
+
+  <p><strong>The relationships to memorize:</strong> ndim = how many numbers are in the shape tuple · size = those numbers multiplied · total memory = size × itemsize (or just <code>.nbytes</code>).</p>
+
+  <h3>Reading shape by dimension</h3>
+  <p>1D → <code>(4,)</code> — the trailing comma makes it a tuple, not a typo · 2D → <code>(rows, columns)</code> · 3D → <code>(blocks, rows, columns)</code></p>
+
+  <h3>Memory &amp; dtypes</h3>
+  <p>The number in the dtype name <em>is</em> the bit count: int32/float32 → 4 bytes each, int64/float64 → 8 bytes each. A million float64 values = 8 MB; switching to float32 halves it. You trade precision for memory.</p>
+</section>
+
+<!-- ================= RESHAPE ================= -->
+<section id="reshape">
+  <span class="sec-tag">notes[4]</span>
+  <h2>Reshaping</h2>
+  <p class="task-ref">Tasks 6 (product IDs) · 10 (salaries) · 11 (pixels) · 12 (72-element challenge)</p>
+
+  <h3>arange — generate sequences</h3>
+<pre><code>np.arange(1000, 1101)  <span class="cmt"># 1000..1100 → 101 values (stop is exclusive)</span>
+np.arange(64)          <span class="cmt"># 0..63 → 64 values</span>
+ids[::5]               <span class="cmt"># slicing: every 5th element</span></code></pre>
+
+  <h3>reshape — same data, new structure</h3>
+<pre><code>np.arange(64).reshape(8, 8)      <span class="cmt"># 1D → 2D grid</span>
+np.arange(64).reshape(4, 4, 4)   <span class="cmt"># 1D → 3D cube</span>
+data.reshape(8, -1)              <span class="cmt"># -1 = "NumPy, calculate this one"</span></code></pre>
+
+  <div class="trap"><span class="t-label">The golden rule</span>
+  New dimensions must multiply to exactly <code>size</code>. 72 elements → (8,9), (6,12), (3,4,6) all work. 101 elements → <strong>nothing works, because 101 is prime</strong> — that was the Task 6 trap.</div>
+
+  <p><strong>What reshape changes:</strong> shape, ndim. <strong>What stays the same:</strong> the values, their order, and the element count. A 6×4 and a 4×6 of the same 24 salaries hold identical data — just rewrapped.</p>
+
+  <div class="dive"><span class="t-label">Dive connection</span>
+  An 8×8 grid of numbers <em>is</em> a tiny grayscale image. A (height, width, 3) array <em>is</em> a colour photo. Every frame from the A7III or Insta360, opened in Python, is exactly this — a reshaped NumPy array.</div>
+</section>
+
+<!-- ================= INDEXING ================= -->
+<section id="index">
+  <span class="sec-tag">notes[5]</span>
+  <h2>Indexing &amp; slicing</h2>
+  <p class="task-ref">Tasks 13 (purchases) · 14 (revenue matrix) · 15 (tournament scores) · 5 (masking)</p>
+
+  <h3>1D: position numbers</h3>
+<pre><code>purchases[0]       <span class="cmt"># first</span>
+purchases[-1]      <span class="cmt"># last — negative counts from the end</span>
+purchases[2]       <span class="cmt"># the THIRD element — counting starts at 0</span>
+purchases[[2, 6]]  <span class="cmt"># fancy indexing: several positions at once</span></code></pre>
+
+  <h3>2D: the [row, column] pattern — most-tested skill</h3>
+<pre><code>revenue[0]         <span class="cmt"># first row</span>
+revenue[-1]        <span class="cmt"># last row</span>
+revenue[:, 1]      <span class="cmt"># ALL rows, column 1 → the second column</span>
+revenue[:, -1]     <span class="cmt"># last column</span>
+revenue[1:3, 1:3]  <span class="cmt"># middle 2×2 block</span></code></pre>
+  <p><strong>Mental model:</strong> the comma separates dimensions. Before the comma = rows, after = columns, <code>:</code> = "all of them".</p>
+
+  <h3>Corners &amp; diagonals — paired index lists</h3>
+<pre><code>scores[[0, 0, -1, -1], [0, -1, 0, -1]]   <span class="cmt"># the 4 corners as (row,col) pairs</span>
+scores[[0,1,2,3,4], [0,1,2,3,4]]         <span class="cmt"># diagonal: (0,0),(1,1),(2,2)…</span>
+np.diag(scores)                          <span class="cmt"># the shortcut</span></code></pre>
+
+  <h3>Boolean masking — the most powerful trick in the whole worksheet</h3>
+<pre><code>lottery &gt; 500              <span class="cmt"># a True/False array</span>
+lottery[lottery % 2 == 0]  <span class="cmt"># keep only values where condition is True</span>
+np.sum(lottery &gt; 500)      <span class="cmt"># count the Trues (True counts as 1)</span></code></pre>
+  <p>Read it aloud: <em>"give me lottery, where lottery is even."</em> One readable line replaces an entire filter loop — and it's the exact pattern Pandas filtering uses later.</p>
+</section>
+
+<!-- ================= TRAPS ================= -->
+<section id="traps">
+  <span class="sec-tag">notes[6]</span>
+  <h2>The 5 traps that cost marks</h2>
+  <table>
+    <tr><th>#</th><th>Trap</th><th>The fix</th></tr>
+    <tr><td>1</td><td>Exclusive stop values</td><td><code>arange(1000, 1101)</code> to include 1100; <code>randint(100, 1000)</code> to include 999</td></tr>
+    <tr><td>2</td><td>Shape as tuple</td><td><code>np.zeros((5, 4))</code> — double parentheses</td></tr>
+    <tr><td>3</td><td>Zero-based counting</td><td>3rd element = <code>[2]</code>, 7th = <code>[6]</code></td></tr>
+    <tr><td>4</td><td>Reshape size rule</td><td>new dims must multiply to <code>size</code>; 101 is prime → unreshapeable</td></tr>
+    <tr><td>5</td><td>Even matrices have no centre</td><td>a 4×4 has a middle 2×2 block, not one centre cell — say so, it shows understanding</td></tr>
+  </table>
+</section>
+
+<!-- ================= QUIZ ================= -->
+<section id="quiz">
+  <h2>Self-test <span style="font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--ink-soft);font-weight:400">12 questions</span></h2>
+  <p style="margin-top:6px">Pick an answer for each, then hit <strong>Check my answers</strong>. Explanations appear under every question — read them even for the ones you got right.</p>
+
+  <div class="q" data-answer="b">
+    <span class="q-num">Q1 / notes[1]</span>
+    <p class="q-text">Which line correctly creates a 5×4 matrix of zeros?</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="q1" value="a"><span><code>np.zeros(5, 4)</code></span></label>
+      <label class="opt"><input type="radio" name="q1" value="b"><span><code>np.zeros((5, 4))</code></span></label>
+      <label class="opt"><input type="radio" name="q1" value="c"><span><code>np.zeros[5, 4]</code></span></label>
+    </div>
+    <div class="explain"><b>B.</b> The shape goes in as a single tuple — hence the double parentheses. <code>np.zeros(5, 4)</code> raises a TypeError because NumPy reads 4 as a dtype argument.</div>
+  </div>
+
+  <div class="q" data-answer="c">
+    <span class="q-num">Q2 / notes[2]</span>
+    <p class="q-text">How many values can <code>np.random.randint(100, 1000, 20)</code> possibly produce as its maximum?</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="q2" value="a"><span>1000 — the upper bound is included</span></label>
+      <label class="opt"><input type="radio" name="q2" value="b"><span>1001 — bounds are both inclusive</span></label>
+      <label class="opt"><input type="radio" name="q2" value="c"><span>999 — the upper bound is exclusive</span></label>
+    </div>
+    <div class="explain"><b>C.</b> <code>randint(low, high)</code> draws from low up to high−1. Same logic as <code>arange()</code> and Python's <code>range()</code> — stop values are exclusive everywhere.</div>
+  </div>
+
+  <div class="q" data-answer="a">
+    <span class="q-num">Q3 / notes[1]</span>
+    <p class="q-text">What does <code>np.ones((7, 3)) * 50</code> demonstrate?</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="q3" value="a"><span>Broadcasting — one operation applied to every element</span></label>
+      <label class="opt"><input type="radio" name="q3" value="b"><span>Matrix multiplication of two arrays</span></label>
+      <label class="opt"><input type="radio" name="q3" value="c"><span>A loop that NumPy hides from you, running at Python speed</span></span></label>
+    </div>
+    <div class="explain"><b>A.</b> The scalar 50 is "broadcast" across all 21 elements in a single vectorized operation — done in fast compiled code, not a Python loop. This is the core reason NumPy is fast.</div>
+  </div>
+
+  <div class="q" data-answer="b">
+    <span class="q-num">Q4 / notes[3]</span>
+    <p class="q-text">An array has <code>shape == (2, 3, 4)</code>. What are its <code>ndim</code> and <code>size</code>?</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="q4" value="a"><span>ndim = 9, size = 3</span></label>
+      <label class="opt"><input type="radio" name="q4" value="b"><span>ndim = 3, size = 24</span></label>
+      <label class="opt"><input type="radio" name="q4" value="c"><span>ndim = 3, size = 9</span></label>
+    </div>
+    <div class="explain"><b>B.</b> ndim = the count of numbers in the shape tuple (3 of them). size = their product: 2 × 3 × 4 = 24.</div>
+  </div>
+
+  <div class="q" data-answer="c">
+    <span class="q-num">Q5 / notes[3]</span>
+    <p class="q-text">A float32 array holds 1,000,000 values. Roughly how much memory does it use, and what would float64 use instead?</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="q5" value="a"><span>32 MB vs 64 MB</span></label>
+      <label class="opt"><input type="radio" name="q5" value="b"><span>1 MB vs 2 MB</span></label>
+      <label class="opt"><input type="radio" name="q5" value="c"><span>4 MB vs 8 MB</span></label>
+    </div>
+    <div class="explain"><b>C.</b> float32 = 32 bits = 4 bytes per element → 4 MB total. float64 doubles it to 8 MB. The dtype number is bits; divide by 8 for bytes.</div>
+  </div>
+
+  <div class="q" data-answer="a">
+    <span class="q-num">Q6 / notes[4]</span>
+    <p class="q-text">Why can't <code>np.arange(1000, 1101)</code> be reshaped into any 2D matrix?</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="q6" value="a"><span>It has 101 elements, and 101 is prime — no factor pair exists</span></label>
+      <label class="opt"><input type="radio" name="q6" value="b"><span>arange() output can never be reshaped</span></label>
+      <label class="opt"><input type="radio" name="q6" value="c"><span>It has 100 elements but they're integers, and reshape needs floats</span></label>
+    </div>
+    <div class="explain"><b>A.</b> Inclusive start, exclusive stop → 1101 − 1000 = 101 values. Reshape needs rows × cols = size exactly, and a prime number has no usable factor pair (other than 1×101, which is just a row).</div>
+  </div>
+
+  <div class="q" data-answer="b">
+    <span class="q-num">Q7 / notes[4]</span>
+    <p class="q-text">What does the <code>-1</code> do in <code>data.reshape(8, -1)</code>?</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="q7" value="a"><span>Reverses the order of the elements</span></label>
+      <label class="opt"><input type="radio" name="q7" value="b"><span>Tells NumPy to calculate that dimension automatically</span></label>
+      <label class="opt"><input type="radio" name="q7" value="c"><span>Removes the last element so the reshape fits</span></label>
+    </div>
+    <div class="explain"><b>B.</b> <code>-1</code> means "you figure this one out." For 72 elements, <code>reshape(8, -1)</code> becomes (8, 9) automatically. Only one <code>-1</code> is allowed per reshape.</div>
+  </div>
+
+  <div class="q" data-answer="c">
+    <span class="q-num">Q8 / notes[4]</span>
+    <p class="q-text">Salaries are reshaped from 6×4 to 4×6. What changed and what stayed the same?</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="q8" value="a"><span>The values were re-sorted into the new rows; the shape stayed the same</span></label>
+      <label class="opt"><input type="radio" name="q8" value="b"><span>Both shape and data changed — reshape rebuilds the array</span></label>
+      <label class="opt"><input type="radio" name="q8" value="c"><span>Only the shape changed; the values, their order, and the count (24) are identical</span></label>
+    </div>
+    <div class="explain"><b>C.</b> Reshape just rewraps the same flat sequence into different row lengths. Flatten both versions and they're equal — that's what <code>np.array_equal</code> confirmed in Task 10.</div>
+  </div>
+
+  <div class="q" data-answer="a">
+    <span class="q-num">Q9 / notes[5]</span>
+    <p class="q-text">In a purchases array, how do you retrieve the <em>third</em> and <em>seventh</em> elements together?</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="q9" value="a"><span><code>purchases[[2, 6]]</code></span></label>
+      <label class="opt"><input type="radio" name="q9" value="b"><span><code>purchases[[3, 7]]</code></span></label>
+      <label class="opt"><input type="radio" name="q9" value="c"><span><code>purchases[2, 6]</code></span></label>
+    </div>
+    <div class="explain"><b>A.</b> Zero-based: 3rd = index 2, 7th = index 6. The inner list makes it fancy indexing. Option C (<code>[2, 6]</code> without the inner list) means "row 2, column 6" — a 2D lookup that fails on a 1D array.</div>
+  </div>
+
+  <div class="q" data-answer="b">
+    <span class="q-num">Q10 / notes[5]</span>
+    <p class="q-text">For a 4×4 matrix <code>revenue</code>, what does <code>revenue[:, 1]</code> return?</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="q10" value="a"><span>The second row</span></label>
+      <label class="opt"><input type="radio" name="q10" value="b"><span>The second column</span></label>
+      <label class="opt"><input type="radio" name="q10" value="c"><span>A single element at position (0, 1)</span></label>
+    </div>
+    <div class="explain"><b>B.</b> Before the comma = rows (<code>:</code> = all of them), after = column 1. Reading <code>[all rows, column 1]</code> gives the second column. <code>revenue[1]</code> alone would be the second row.</div>
+  </div>
+
+  <div class="q" data-answer="c">
+    <span class="q-num">Q11 / notes[5]</span>
+    <p class="q-text">What does <code>lottery[lottery % 2 == 0]</code> do?</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="q11" value="a"><span>Returns True if every value is even</span></label>
+      <label class="opt"><input type="radio" name="q11" value="b"><span>Divides every element by 2</span></label>
+      <label class="opt"><input type="radio" name="q11" value="c"><span>Filters the array, keeping only the even values</span></span></label>
+    </div>
+    <div class="explain"><b>C.</b> Boolean masking. The condition produces a True/False array; using it as the index keeps only positions where it's True. Read it as: "give me lottery, where lottery is even."</div>
+  </div>
+
+  <div class="q" data-answer="a">
+    <span class="q-num">Q12 / notes[5]</span>
+    <p class="q-text">What does <code>scores[[0, 1, 2], [0, 1, 2]]</code> return for a matrix?</p>
+    <div class="opts">
+      <label class="opt"><input type="radio" name="q12" value="a"><span>The diagonal elements (0,0), (1,1), (2,2)</span></label>
+      <label class="opt"><input type="radio" name="q12" value="b"><span>The first three rows</span></label>
+      <label class="opt"><input type="radio" name="q12" value="c"><span>A 3×3 sub-matrix from the top-left corner</span></label>
+    </div>
+    <div class="explain"><b>A.</b> Two lists = paired (row, col) coordinates: row 0 col 0, row 1 col 1, row 2 col 2 — the diagonal. To get a sub-matrix block you'd slice instead: <code>scores[0:3, 0:3]</code>.</div>
+  </div>
+
+  <div class="quiz-actions">
+    <button id="checkBtn" type="button">Check my answers</button>
+    <button id="resetBtn" type="button">Reset</button>
+    <div id="score" role="status" aria-live="polite"></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  Built from Tasks 1–15 · next stop: <code>pandas</code>, where every DataFrame is a NumPy array wearing labels
+</footer>
+
+<script>
+// ---- hero grid animation: cells light up like arange() filling a frame ----
+(function(){
+  const grid = document.getElementById('heroGrid');
+  const total = 128;
+  for(let i=0;i<total;i++){ grid.appendChild(document.createElement('span')); }
+  const cells = grid.children;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce){ for(const c of cells) c.classList.add('lit'); return; }
+  let i = 0;
+  const t = setInterval(()=>{
+    if(i >= total){ clearInterval(t); return; }
+    cells[i].classList.add('lit');
+    i += 4; // light 4 per tick
+    cells[Math.min(i-3,total-1)]?.classList.add('lit');
+    cells[Math.min(i-2,total-1)]?.classList.add('lit');
+    cells[Math.min(i-1,total-1)]?.classList.add('lit');
+  }, 38);
+})();
+
+// ---- quiz logic ----
+(function(){
+  const questions = document.querySelectorAll('.q');
+  const scoreEl = document.getElementById('score');
+
+  document.getElementById('checkBtn').addEventListener('click', ()=>{
+    let correct = 0, answered = 0;
+    questions.forEach(q=>{
+      const right = q.dataset.answer;
+      const chosen = q.querySelector('input:checked');
+      const opts = q.querySelectorAll('.opt');
+      opts.forEach(o=>o.classList.remove('correct','wrong'));
+      q.querySelector('.explain').classList.add('show');
+      // always highlight the right answer
+      opts.forEach(o=>{
+        if(o.querySelector('input').value === right) o.classList.add('correct');
+      });
+      if(chosen){
+        answered++;
+        if(chosen.value === right){ correct++; }
+        else { chosen.closest('.opt').classList.add('wrong'); }
+      }
+    });
+    let verdict;
+    if(correct === 12) verdict = "Perfect dive. You own Sections A–D — go straight to pandas.";
+    else if(correct >= 10) verdict = "Strong. Reread just the explanations you missed, then you're done.";
+    else if(correct >= 7) verdict = "Solid base. The traps section (notes[6]) covers most of what you missed.";
+    else verdict = "Good attempt — reread notes[4] and notes[5], then retake. Indexing clicks fast on the second pass.";
+    scoreEl.innerHTML = `Score: ${correct} / 12 <span class="verdict">${verdict}</span>`;
+    if(answered < 12){
+      scoreEl.innerHTML += `<span class="verdict">(${12-answered} unanswered — correct answers are highlighted in green)</span>`;
+    }
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    questions.forEach(q=>{
+      q.querySelectorAll('input').forEach(i=>i.checked=false);
+      q.querySelectorAll('.opt').forEach(o=>o.classList.remove('correct','wrong'));
+      q.querySelector('.explain').classList.remove('show');
+    });
+    scoreEl.textContent = '';
+    document.getElementById('quiz').scrollIntoView();
+  });
+})();
+</script>
+</body>
+</html>

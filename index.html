@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mijo Learns — Build Log &amp; Study Notes</title>
+<meta name="description" content="Interactive study notes by Mijo NH — learning AI and Python by building, one topic at a time.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6FAFB;
+  --ink:#0C2630;
+  --ink-soft:#3D5A66;
+  --reef:#0E7C7B;
+  --reef-tint:#E2F1F0;
+  --coral:#E8593F;
+  --sand:#F2E8D5;
+  --amber:#C77B0A;
+  --radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'IBM Plex Sans',sans-serif;
+  background:var(--paper);color:var(--ink);
+  line-height:1.65;font-size:16.5px;
+  min-height:100vh;display:flex;flex-direction:column;
+}
+.wrap{max-width:860px;margin:0 auto;padding:0 22px;width:100%}
+
+header{
+  background:linear-gradient(180deg,#0C2630 0%,#11414A 100%);
+  color:#E8F4F5;padding:64px 0 56px;
+}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  letter-spacing:.14em;text-transform:uppercase;color:#7FC9C5;margin-bottom:14px;
+}
+h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(32px,5.5vw,50px);font-weight:700;line-height:1.1;letter-spacing:-.015em;
+}
+h1 .mono{font-family:'JetBrains Mono',monospace;color:#7FC9C5;font-weight:500}
+.hero-sub{margin-top:16px;max-width:580px;color:#B9D8DA;font-size:17.5px}
+
+main{flex:1;padding:48px 0 70px}
+.section-label{
+  font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--reef);
+  background:var(--reef-tint);display:inline-block;padding:4px 10px;
+  border-radius:5px;margin-bottom:18px;
+}
+
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+
+.card{
+  background:#fff;border:1px solid #DCE9EB;border-radius:var(--radius);
+  padding:24px;display:flex;flex-direction:column;gap:8px;
+  text-decoration:none;color:var(--ink);
+  transition:border-color .15s, transform .15s, box-shadow .15s;
+}
+a.card:hover,a.card:focus-visible{
+  border-color:var(--reef);transform:translateY(-2px);
+  box-shadow:0 6px 18px rgba(12,38,48,.08);
+}
+a.card:focus-visible{outline:3px solid #7FC9C5;outline-offset:2px}
+.card .topic-num{
+  font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--reef);
+  letter-spacing:.06em;
+}
+.card h2{
+  font-family:'Space Grotesk',sans-serif;font-size:21px;font-weight:700;
+  letter-spacing:-.01em;
+}
+.card p{font-size:14.5px;color:var(--ink-soft);flex:1}
+.card .meta{
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft);
+  display:flex;align-items:center;gap:8px;margin-top:6px;
+}
+.badge{
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 9px;border-radius:99px;
+}
+.badge.live{background:var(--reef-tint);color:#0A5857}
+.badge.soon{background:var(--sand);color:var(--amber)}
+.card.soon{opacity:.78;cursor:default}
+
+.about{
+  margin-top:52px;background:#fff;border:1px solid #DCE9EB;
+  border-radius:var(--radius);padding:26px 28px;
+}
+.about h2{
+  font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px;
+}
+.about p{font-size:15px;color:var(--ink-soft);max-width:64ch}
+.about a{color:var(--reef);font-weight:600;text-decoration:none}
+.about a:hover{text-decoration:underline}
+
+footer{
+  text-align:center;padding:26px 20px 44px;color:var(--ink-soft);font-size:13.5px;
+  font-family:'JetBrains Mono',monospace;
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Mijo NH · build log</div>
+    <h1>Learning by building.<br><span class="mono">one topic at a time</span></h1>
+    <p class="hero-sub">Interactive study notes from my Python and AI journey — written as I learn, built and shipped by me. Each topic ends with a self-test, because reading isn't knowing.</p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <span class="section-label">topics[:]</span>
+
+    <div class="topics">
+
+      <!-- LIVE: NumPy -->
+      <a class="card" href="numpy/">
+        <span class="topic-num">topics[0]</span>
+        <h2>NumPy Fundamentals</h2>
+        <p>Arrays, attributes, reshaping, indexing, and boolean masking — 15 tasks distilled into notes, the 5 traps that cost marks, and a 12-question self-test.</p>
+        <div class="meta">
+          <span class="badge live">Live</span>
+          <span>notes + self-test</span>
+        </div>
+      </a>
+
+      <!-- COMING SOON: Pandas -->
+      <div class="card soon">
+        <span class="topic-num">topics[1]</span>
+        <h2>Pandas</h2>
+        <p>DataFrames are NumPy arrays wearing labels. Filtering, grouping, and cleaning real data — the bridge to actual analysis work.</p>
+        <div class="meta">
+          <span class="badge soon">Coming soon</span>
+        </div>
+      </div>
+
+      <!-- COMING SOON: Python core -->
+      <div class="card soon">
+        <span class="topic-num">topics[2]</span>
+        <h2>Python Core</h2>
+        <p>Tuples, dictionaries, sets, and the patterns underneath everything else. The foundations, written down properly.</p>
+        <div class="meta">
+          <span class="badge soon">Coming soon</span>
+        </div>
+      </div>
+
+      <!--
+      ════════════════════════════════════════════════════════
+      HOW TO ADD A NEW TOPIC (for future Mijo):
+
+      1. Create a folder:  /topic-name/index.html
+      2. Copy one of the <a class="card"> blocks above
+      3. Update: href="topic-name/", the topics[n] number,
+         the <h2> title, and the description
+      4. Change badge from "soon" to "live"
+      5. Commit + push — GitHub Pages updates in ~1 minute
+      ════════════════════════════════════════════════════════
+      -->
+
+    </div>
+
+    <div class="about">
+      <h2>About this log</h2>
+      <p>I'm Mijo — educator at IPG Kampus Tawau, EdTech builder, and diver in Sabah, Malaysia. This site is my public learning practice: every topic here was studied, broken, debugged, and rebuilt by me with AI as my collaborator. Creating with AI, not just consuming it. Find me as <strong>Mijo NH</strong> on Threads, TikTok, LinkedIn, and Facebook.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  built by Mijo NH · powered by curiosity and np.arange()
+</footer>
+
+</body>
+</html>
